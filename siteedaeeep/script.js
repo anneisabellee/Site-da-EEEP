@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const menuHamburger = document.querySelector('.menu-hamburger');
-    const nav = document.querySelector('.cabeçalho');
+    const nav = document.querySelector('.menu');
 
     // Menu hambúrguer (abrir/fechar painel)
     if (menuHamburger && nav) {
@@ -61,14 +61,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Em dispositivos de toque, ao clicar no link do pai alterna o submenu
         if (triggerLink && submenu) {
             triggerLink.addEventListener('click', (e) => {
-                // Previna navegação quando houver submenu — primeiro clique abre, segundo clica no link
-                e.preventDefault();
                 const willOpen = !parent.classList.contains('open');
                 if (willOpen) {
-                    // fechar irmãos antes de abrir este
+                    // Previna navegação e abra o submenu no primeiro clique
+                    e.preventDefault();
                     closeSiblings(parent);
                     parent.classList.add('open');
                 } else {
+                    // segundo clique: permita a navegação (não prevenir)
                     parent.classList.remove('open');
                 }
             });
@@ -84,3 +84,57 @@ document.addEventListener('DOMContentLoaded', function() {
         // se clicou dentro do nav, não alteramos outros submenus — permite múltiplos abertos
     });
 });
+
+const prevButton = document.getElementById('prev')
+const nextButton = document.getElementById('next')
+const items = document.querySelectorAll('.item')
+const dots = document.querySelectorAll('.dot')
+const numberIndicator = document.querySelector('.numbers')
+
+let active = 0;
+const total = items.length
+let timer;
+
+function update(direction) {
+
+    document.querySelector('.item.active').classList.remove('active')
+    document.querySelector('.dot.active').classList.remove('active')
+
+    if(direction > 0) {
+        active = active + 1
+
+        if(active === total){
+            active = 0
+        }
+    } 
+    
+    
+    else if(direction < 0) {
+        active = active - 1
+
+        if(active < 0) {
+            active = total - 1
+        }
+
+    }
+
+    items[active].classList.add('active')
+    dots[active].classList.add('active')
+
+    numberIndicator.textContent = String(active + 1).padStart(2,'0')
+
+}
+
+clearInterval(timer)
+timer = setInterval (() => {
+    update(1)
+}, 5000);
+
+prevButton.addEventListener('click', () => {
+    update(-1)
+})
+
+nextButton.addEventListener('click', () => {
+    update(1)
+})
+
